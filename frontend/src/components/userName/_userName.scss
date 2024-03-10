@@ -1,0 +1,49 @@
+.edit-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    border: 1px solid black;
+    background-color: white;
+    width: 40%;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+}
+
+.input-wrapper-username {
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+#userName,
+#firstName,
+#lastName {
+    width: 60%;
+    margin-left: 10px;
+}
+
+#firstName,
+#lastName {
+    background-color: #e7e7e7;
+    color: #adadad;
+}
+
+.buttons-username {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.buttons-edit {
+    display: block;
+    width: 40%;
+    padding: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    border-color: #00bc77;
+    background-color: #00bc77;
+    color: #fff;
+}

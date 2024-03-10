@@ -12,6 +12,10 @@
 .main-nav a {
     font-weight: bold;
     color: #2c3e50;
+    svg {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }
 
 .main-nav a.router-link-exact-active {
