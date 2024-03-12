@@ -2,19 +2,22 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { userLogin, userProfile } from '../../redux/slices/userThunk';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' 
+import { setRememberMe } from '../../redux/slices/userSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function Form() {
-    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
+    const [rememberMe, setRememberMeState] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleCheckbox = () => {
-        setRememberMe(!rememberMe);
+        const newRememberMe = !rememberMe;
+        setRememberMeState(newRememberMe);
+        dispatch(setRememberMe(newRememberMe));
     };
 
     useEffect(() => {
@@ -39,6 +42,13 @@ export default function Form() {
             const token = await dispatch(userLogin(email, password, navigate));
             if (token) {
                 dispatch(userProfile(token));
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
+                    localStorage.setItem('email', email);
+                } else {
+                    localStorage.removeItem('rememberMe');
+                    localStorage.removeItem('email');
+                }
             }
         } catch (error) {
             console.error('Error during login:', error);
@@ -50,7 +60,7 @@ export default function Form() {
             <section className="sign-in-content ">
                 <FontAwesomeIcon icon="fa fa-user-circle" className="sign-in-icon" />
                 <h1>Sign In</h1>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="input-wrapper">
                         <label htmlFor="email">Email</label>
                         <input
@@ -73,7 +83,7 @@ export default function Form() {
                         <input type="checkbox" id="remember-me" checked={rememberMe} onChange={handleCheckbox} />
                         <label htmlFor="remember-me">Remember me</label>
                     </div>
-                    <button type="submit" className="sign-in-button" onClick={handleSubmit}>Sign In</button>
+                    <button type="submit" className="sign-in-button">Sign In</button>
                 </form>
             </section>
         </main>

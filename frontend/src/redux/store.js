@@ -1,9 +1,23 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userSliceReducer from './slices/userSlice';
+import userReducer, { saveState, loadState } from './slices/userSlice';
 
-const store = configureStore({  
+const preloadedState = {
+    user: loadState(),
+};
+
+const store = configureStore({
     reducer: {
-        user: userSliceReducer,
-    }});
+        user: userReducer,
+    },
+    preloadedState,
+});
+
+store.subscribe(() => {
+    if (store.getState().user.rememberMe) {
+        saveState(store.getState().user);
+    } else {
+        localStorage.removeItem('state');
+    }
+});
 
 export default store;

@@ -1,6 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+export const loadState = () => {
+    const storedState = localStorage.getItem('state');
+    return storedState ? JSON.parse(storedState) : undefined;
+};
+
+export const saveState = (state) => {
+    const storedState = JSON.stringify(state);
+    localStorage.setItem('state', storedState);
+};
+
+const initialState = loadState() || {
     user: {
         firstName: "",
         lastName: "",
@@ -9,6 +19,7 @@ const initialState = {
         password: "",
     },
     token: null,
+    rememberMe: false,
 };
 
 const userSlice = createSlice({
@@ -27,12 +38,23 @@ const userSlice = createSlice({
         setToken(state, action) {
             state.token = action.payload.body.token;
         },
-        logout() {
-            return initialState;
+        setRememberMe(state, action) {
+            state.rememberMe = action.payload;
+        },
+        logout(state) {
+            state.user = {
+                firstName: "",
+                lastName: "",
+                userName: "",
+                email: "",
+                password: "",
+            };
+            state.token = null;
+            state.rememberMe = false;
         },
     },
 });
 
-export const { setUser, setToken, logout } = userSlice.actions;
+export const { setUser, setToken, setRememberMe, logout } = userSlice.actions;
 
 export default userSlice.reducer;
