@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Logo from './../../assets/img/argentBankLogo.png';
+import Logo from './../../assets/img/argentBankLogo.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logout } from "../../redux/slices/userSlice";
 
