@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: Bank Argent API documentation
+  title: Argent Bank API Documentation
   description: Contains all available API endpoints in this codebase
   version: '1.0.0'
   termsOfService: 'http://swagger.io/terms/'
@@ -8,13 +8,18 @@ host: localhost:3001
 basePath: /api/v1
 schemes:
   - http
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 paths:
   /user/login:
     post:
       tags:
         - User Module
       summary: Login
-      description: API for Login
+      description: API for user login
       parameters:
         - in: body
           name: body
@@ -26,7 +31,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: Login Successfully
+          description: Login Successful
           schema:
             $ref: '#/definitions/LoginResponse'
         '400':
@@ -38,7 +43,7 @@ paths:
       tags:
         - User Module
       summary: Signup
-      description: API for Signup
+      description: API for user signup
       parameters:
         - in: body
           name: body
@@ -50,7 +55,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: Signup Successfully
+          description: Signup Successful
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -65,11 +70,9 @@ paths:
         - User Module
       summary: User Profile API
       description: API for fetching a user profile
-      #produces:
-       # - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile retrieved successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -81,7 +84,7 @@ paths:
         - Bearer: []
       tags:
         - User Module
-      summary: User Profile API
+      summary: Update User Profile API
       description: API for updating a user profile
       parameters:
         - in: body
@@ -94,19 +97,131 @@ paths:
         - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile updated successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
           description: Invalid Fields
         '500':
           description: Internal Server Error
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
+  /user/accounts:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Accounts API
+      description: API for fetching user accounts
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Get Accounts Successfully
+          schema:
+            $ref: '#/definitions/AccountsResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/accounts/{accountId}/transactions:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Account Transactions API
+      description: API for fetching user account transactions
+      parameters:
+        - in: path
+          name: accountId
+          description: Targeted account id
+          type: number
+          required: true
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successfully got transactions 
+          schema:
+            $ref: '#/definitions/TransactionsResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/accounts/{accountId}/transactions/{transactionId}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Account Transaction Details API
+      description: API for fetching transaction details from user account
+      parameters:
+        - in: path
+          name: accountId
+          description: Targeted account id
+          type: number
+          required: true
+        - in: path
+          name: transactionId
+          description: Targeted transaction id
+          type: number
+          required: true
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successfully Got Transaction Details 
+          schema:
+            $ref: '#/definitions/TransactionDetailsResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/accounts/{accountId}/transactions/{transactionId}/category:
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Edit Transaction Category API
+      description: API to edit the category of a transaction
+      parameters:
+        - in: path
+          name: accountId
+          description: Targeted account id
+          type: number
+          required: true
+        - in: path
+          name: transactionId
+          description: Targeted transaction id
+          type: number
+          required: true
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Category retrieved successfully
+          schema:
+            $ref: '#/definitions/CategoryResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
 definitions:
+  Login:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
   User:
     properties:
       email:
@@ -124,14 +239,11 @@ definitions:
       userName:
         type: string
         description: user public name
-  Login:
+  UserProfile:
+    type: object
     properties:
-      email:
+      userName:
         type: string
-        description: user email
-      password:
-        type: string
-        description: user password
   ApiResponse:
     type: object
     properties:
@@ -146,13 +258,52 @@ definitions:
             type: string
           email:
             type: string
-  LoginResponse:
+  AccountsResponse:
     type: object
     properties:
-      token:
-        type: string
-  UserProfile:
+      accounts:
+        type: array
+        items:
+          type: object
+          properties:
+            accountId:
+              type: number
+            accountName:
+              type: string
+  TransactionsResponse:
     type: object
     properties:
-      userName:
+      transactions:
+        type: array
+        items:
+          type: object
+          properties:
+            transactionId:
+              type: number
+            amount:
+              type: number
+            description:
+              type: string
+            date:
+              type: string
+  TransactionDetailsResponse:
+    type: object
+    properties:
+      transactionDetails:
+        type: object
+        properties:
+          transactionId:
+            type: number
+          accountId:
+            type: number
+          amount:
+            type: number
+          description:
+            type: string
+          date:
+            type: string
+  CategoryResponse:
+    type: object
+    properties:
+      category:
         type: string
