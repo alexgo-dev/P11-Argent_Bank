@@ -28,7 +28,6 @@ const handleErrors = (error) => {
         console.error("An unexpected error occurred:", error);
     }
 };
-
 export const userLogin = (email, password, navigate) => async (dispatch) => {
     try {
         const response = await fetch(`${API}/user/login`, {
@@ -52,6 +51,7 @@ export const userLogin = (email, password, navigate) => async (dispatch) => {
         return body.token;
     } catch (error) {
         handleErrors(error);
+        throw error;
     }
 };
 

@@ -10,6 +10,7 @@ export default function Form() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMeState] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function Form() {
         e.preventDefault();
 
         if (email.trim() === "" || password.trim() === "") {
-            alert("Please complete all the fields.");
+            setErrorMessage("Please complete all the fields.");
             return;
         }
 
@@ -49,9 +50,11 @@ export default function Form() {
                     localStorage.removeItem('rememberMe');
                     localStorage.removeItem('email');
                 }
+                setErrorMessage("");
             }
         } catch (error) {
             console.error('Error during login:', error);
+            setErrorMessage('Error during login: please verify the login credentials');
         }
     };
 
@@ -60,6 +63,7 @@ export default function Form() {
             <section className="sign-in-content ">
                 <FontAwesomeIcon icon="fa fa-user-circle" className="sign-in-icon" />
                 <h1>Sign In</h1>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <form onSubmit={handleSubmit}>
                     <div className="input-wrapper">
                         <label htmlFor="email">Email</label>
